@@ -1,0 +1,21 @@
+{
+  "name": "me-instagram-service",
+  "version": "0.0.1",
+  "description": "A Service to get instagram data",
+  "main": "index.js",
+  "dependencies": {
+    "restify": "~2.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pedramphp/me-instagram-service.git"
+  },
+  "author": "Mahdi Pedramrazi",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/pedramphp/me-instagram-service/issues"
+  }
+}
