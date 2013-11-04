@@ -8,7 +8,7 @@ var CLIENT_ID		= "71c7cf49cc78468b9de3f1a6b0985c81",
 	CLIENT_SECRET	= "4c442a0662ee467197c61dafdd259cd9",
 	GRANT_TYPE		= "authorization_code",
 	REDIRECT_URL	= "http://mergify.com/instagram/test",
-	API_BASE_URL 	= "https://api.instagram.com",
+	API_BASE_URL	= "https://api.instagram.com",
 	SELF_FEED		= "/v1/users/self/feed/",
 	AUTH_ACESS_TOKEN = "/oauth/access_token";
 
@@ -41,8 +41,7 @@ var auth = function(req, resCallback, scope){
 				error: err
 			});
 			return;
-		}	
-		
+		}
 		resCallback.call(scope, JSON.parse(obj));
 	});
 };
@@ -66,8 +65,8 @@ var getUserFeed = function(req, resCallback, scope){
 				error: err
 			});
 			return;
-		}	
-		
+		}
+
 		resCallback.call(scope, JSON.parse(obj));
 		return;
 	});
@@ -76,7 +75,7 @@ var getUserFeed = function(req, resCallback, scope){
 
 
 module.exports = {
-	getPosts: 	getPosts,
+	getPosts:	getPosts,
 	auth:		auth,
 	getUserFeed: getUserFeed
 };
