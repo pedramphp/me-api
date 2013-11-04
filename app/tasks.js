@@ -1,5 +1,6 @@
 /* jshint node: true, quotmark:false */
 "use strict";
+
 var querystring = require('querystring');
 var restify = require('restify');
 
@@ -27,11 +28,11 @@ var auth = function(req, resCallback, scope){
 	});
 	
 	var data = {
-		client_id:	 	CLIENT_ID,
-		client_secret:  CLIENT_SECRET,
-		grant_type: 	GRANT_TYPE,
-		redirect_uri: 	REDIRECT_URL,
-		code: 			req.params.auth
+		client_id:		CLIENT_ID,
+		client_secret:	CLIENT_SECRET,
+		grant_type:		GRANT_TYPE,
+		redirect_uri:	REDIRECT_URL,
+		code:			req.params.auth
 	};
 
 	client.post(AUTH_ACESS_TOKEN, data, function(err, req, res, obj){
