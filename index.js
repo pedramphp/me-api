@@ -17,6 +17,16 @@ app		= function(){
 				versions:	'0.0.1',
 				task:		'getPosts',
 				reqType:	'get'
+			},{
+				path:		'/auth/:auth',
+				versions:	'0.0.1',
+				task:		'auth',
+				reqType:	'get'
+			},{
+				path:		'/user_feed/:access_token',
+				versions:	'0.0.1',
+				task:		'getUserFeed',
+				reqType:	'get'
 			}];
 
 			// loop throgh all paths and initiate server request
@@ -27,8 +37,9 @@ app		= function(){
 					versions:	item.versions
 				}, function(req, res, next){
 
-					var data = tasks[item.task](req);
-					that.respond(data, res, next);
+					tasks[item.task](req, function(data){
+						that.respond(data, res, next);
+					}, that);
 
 				});
 			
@@ -36,8 +47,13 @@ app		= function(){
 		},
 
 		respond: function(data, res, next){
+			if(data.error){
+				
+				return next(new Error(data.error));
+			}
+			console.log("response:", data);
 			res.json(data);
-			return next();
+			next();
 		}
 	};
 }();

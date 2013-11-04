@@ -1,0 +1,32 @@
+<!--
+CLIENT INFO
+CLIENT ID	71c7cf49cc78468b9de3f1a6b0985c81
+CLIENT SECRET	4c442a0662ee467197c61dafdd259cd9
+WEBSITE URL	http://mergify.com
+REDIRECT URI	http://mergify.com
+
+-->
+Loading
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+<script>
+	
+	var url = "https://api.instagram.com/oauth/authorize/?";
+	url += "client_id=71c7cf49cc78468b9de3f1a6b0985c81";
+	url += "&redirect_uri=http://mergify.com/instagram/test";
+	url += "&response_type=code";
+	if(! (/code=/.test(window.location.href))){
+		setTimeout(function(){
+			window.location.href = url;
+		}, 3000);
+	}else{
+		var code = window.location.search.split("?code=")[1];
+		$.ajax({
+			url: "https://api.instagram.com/v1/users/self/feed?access_token="+access_token+"&callback=?",
+			dataType: "jsonp",
+			success: function(){
+				console.log(arguments);
+			}
+		});
+	}
+	
+</script>
