@@ -2,9 +2,9 @@
 "use strict";
 
 var
-server	= require("./server/rest-server").getServer(),
-tasks	= require("./app/tasks"),
-app		= function(){
+server = require("./server/rest-server").getServer(),
+tasks = require("./app/tasks"),
+app = function(){
 	return {
 		init: function(){
 			this.initPaths();
