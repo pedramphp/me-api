@@ -25,9 +25,9 @@ app = function(){
 				vendor:		tasks.INSTAGRAM,
 				reqType:	'get'
 			},{
-				path:		'/facebook/auth/:authToken',
+				path:		'/facebook/user_feed/:accessToken',
 				versions:	'0.0.1',
-				tast:		'auth',
+				task:		'getUserFeed',
 				vendor:		tasks.FACEBOOK,
 				reqType:	'get'
 			}];
@@ -39,6 +39,10 @@ app = function(){
 					path:		item.path,
 					versions:	item.versions
 				}, function(req, res, next){
+					if(!tasks[item.task]){
+						that.respond({ error: "app initPaths : Task is misspelled" }, res, next);
+						return;	
+					}
 					
 					tasks[item.task](req, item.vendor, function(data){
 						that.respond(data, res, next);

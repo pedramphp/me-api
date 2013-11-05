@@ -36,16 +36,23 @@ tasks = function(){
 		},
 		
 		getUserFeed: function(req, vendor, resCallback, scope){
+				console.log("we are here");
+				
 			var accessToken = req.params.accessToken,
-				response;
+				response,
+				reqData;
 				
 			response = function(responseObj){
 				resCallback.call(scope, responseObj);
 			}
 			
 			if(vendor == this.FACEBOOK){
-			
-				facebookApi.getUserFeed(accessToken, response, this);
+				reqData = {
+					accessToken: accessToken,
+					start: 0,
+					limit: 10
+				};
+				facebookApi.getUserFeed(reqData, response, this);
 			
 			}else if(vendor == this.INSTAGRAM){
 				console.log(accessToken);
@@ -58,8 +65,3 @@ tasks = function(){
 
 
 module.exports = tasks;
-
-/*
-{"access_token":"353722391.71c7cf4.b715204c2d004c84ae7330ad582abb1b",
-"user":{"username":"mahdipedram","bio":"","website":"","profile_picture":"http://images.ak.instagram.com/profiles/profile_353722391_75sq_1366096725.jpg","full_name":"Mahdi PedramRazi","id":"353722391"}}
-*/
