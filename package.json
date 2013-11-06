@@ -4,7 +4,8 @@
   "description": "A Service to get instagram data",
   "main": "index.js",
   "dependencies": {
-    "restify": "~2.6.0"
+    "restify": "~2.6.0",
+    "twit":  "~1.1.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

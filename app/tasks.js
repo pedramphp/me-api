@@ -4,6 +4,8 @@
 
 var facebookApi =  require("./facebookApi"),
 	instagramApi =  require("./instagramApi"),
+	twitterApi =  require("./twitterApi"),
+	
 	tasks;
 
 
@@ -36,7 +38,6 @@ tasks = function(){
 		},
 		
 		getUserFeed: function(req, vendor, resCallback, scope){
-				console.log("we are here");
 				
 			var accessToken = req.params.accessToken,
 				response,
@@ -58,6 +59,8 @@ tasks = function(){
 				console.log(accessToken);
 				instagramApi.getUserFeed(accessToken, response, this);
 				
+			}else if(vendor == this.TWITTER){
+				twitterApi.getUserFeed(accessToken, response, this);	
 			}			
 		}
 	};

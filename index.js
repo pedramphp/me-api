@@ -30,6 +30,12 @@ app = function(){
 				task:		'getUserFeed',
 				vendor:		tasks.FACEBOOK,
 				reqType:	'get'
+			},{
+				path:		'/twitter/user_feed/:accessToken',
+				versions:	'0.0.1',
+				task:		'getUserFeed',
+				vendor:		tasks.TWITTER,
+				reqType:	'get'
 			}];
 
 			// loop throgh all paths and initiate server request
