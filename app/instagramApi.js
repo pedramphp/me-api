@@ -58,7 +58,8 @@ var instagramApi = function(){
 			});
 			
 			data = {
-				access_token: accessToken
+				access_token: accessToken,
+				count: 10
 			};
 			
 			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data);

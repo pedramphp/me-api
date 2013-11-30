@@ -36,6 +36,11 @@ app = function(){
 				task:		'getUserFeed',
 				vendor:		tasks.TWITTER,
 				reqType:	'get'
+			},{
+				path:		'/timeline/home/',
+				versions:	'0.0.1',
+				task:		'getHomeTimeline',
+				reqType:	'get'
 			}];
 
 			// loop throgh all paths and initiate server request
@@ -50,7 +55,7 @@ app = function(){
 						return;	
 					}
 					
-					tasks[item.task](req, item.vendor, function(data){
+					tasks[item.task](req, item.vendor || null, function(data){
 						that.respond(data, res, next);
 					}, that);
 

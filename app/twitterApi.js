@@ -42,7 +42,7 @@ var twitterApi = function(){
 			  , access_token_secret:  'P22wjAeEnLXRAxVKbG4JzCjuAka0PMU3ldO87yrmZOlv3'
 			});
 			
-			T.get('statuses/home_timeline', { count: 5}, function(err, obj) {
+			T.get('statuses/home_timeline', { count: 3 }, function(err, obj) {
 				console.log(arguments);
   				if(err && err.message){
 					callback.call(scope, {

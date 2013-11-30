@@ -5,7 +5,7 @@
 var facebookApi =  require("./facebookApi"),
 	instagramApi =  require("./instagramApi"),
 	twitterApi =  require("./twitterApi"),
-	
+	homeTimeline = require("./home-timeline"),
 	tasks;
 
 
@@ -25,7 +25,7 @@ tasks = function(){
 				// before calling the callback function it needs to save the auth token in the database.
 				resCallback.call(scope, responseObj);
 			}
-			x
+			
 			if(vendor == this.FACEBOOK){
 			
 				facebookApi.auth(authToken, response, this);
@@ -62,6 +62,24 @@ tasks = function(){
 			}else if(vendor == this.TWITTER){
 				twitterApi.getUserFeed(accessToken, response, this);	
 			}			
+		},
+		
+		getHomeTimeline: function(req, vendor, resCallback, scope){
+			
+			var response,
+				reqData;
+				
+			response = function(responseObj){
+				resCallback.call(scope, responseObj);
+			}
+			
+			
+			reqData = {
+				start: 0,
+				size: 10
+			};
+			
+			homeTimeline.getTimeline(reqData, response, this);			
 		}
 	};
 }();
