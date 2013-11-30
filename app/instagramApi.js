@@ -4,8 +4,8 @@
 */
 
 var querystring = require('querystring'),
-	restify = require('restify');
-
+	restify = require('restify'),
+	Q = require('q');
 
 var instagramApi = function(){
 	
@@ -46,7 +46,7 @@ var instagramApi = function(){
 			});	
 		},
 		
-		getUserFeed: function(accessToken, callback, scope){
+		getUserFeed: function(config, callback, scope){
 			
 			var client,
 				data,
@@ -58,8 +58,8 @@ var instagramApi = function(){
 			});
 			
 			data = {
-				access_token: accessToken,
-				count: 10
+				access_token: config.accessToken,
+				count: config.count || 10
 			};
 			
 			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data);
@@ -76,6 +76,24 @@ var instagramApi = function(){
 				callback.call(scope, JSON.parse(obj));
 				return;
 			});
+		},
+		
+		getFeedPromise: function(config){
+			var deferred,
+				data = {
+					accessToken:	config.accessToken,
+					count: 			config.limit || 10
+				};
+			
+			deferred = Q.defer();
+			this.getUserFeed(data, function(items){
+				if( items.error){
+					deferred.reject(new Error(items.error));
+					return;
+				}
+				deferred.resolve(items);
+			}, this);
+			return deferred.promise;			
 		}
 	
 	}; //  return 

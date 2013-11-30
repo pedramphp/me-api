@@ -17,7 +17,8 @@ http://216.70.108.50:7000/facebook/user_feed/CAADuCyYQHbwBACOP3AseylGj8lWY3G47NX
 * * 
 * */
 var querystring = require('querystring'),
-	restify = require('restify');
+	restify = require('restify'),
+	Q = require('q');
 
 var facebookApi = function(){
 	
@@ -57,6 +58,25 @@ var facebookApi = function(){
 				callback.call(scope, JSON.parse(obj));
 				return;
 			});
+		},
+		
+		getFeedPromise: function(config){
+			var deferred,
+				data = {
+					accessToken:	config.accessToken,
+					limit: 			config.limit || 10,
+					before:			config.start || 0
+				};
+			
+			deferred = Q.defer();
+			this.getUserFeed(data, function(items){
+				if( items.error){
+					deferred.reject(new Error(items.error));
+					return;
+				}
+				deferred.resolve(items);
+			}, this);
+			return deferred.promise;			
 		}
 	
 	}; //  return 

@@ -21,7 +21,8 @@ Access level	Read-only
 
 
 var querystring = require('querystring'),
-	restify = require('restify');
+	restify = require('restify'),
+	Q = require('q');
 
 var Twit = require('twit');
 
@@ -32,9 +33,8 @@ var twitterApi = function(){
 	
 	return {
 		
-		getUserFeed: function(req, callback, scope){
-			
-			
+		getUserFeed: function(config, callback, scope){
+						
 			var T = new Twit({
 			    consumer_key:         'cghIPQ5xAS8H3WlDkyiURw'
 			  , consumer_secret:      'KbVoamKQidrhk5tdo6HNHx8iKm8kANhkNMSOWr6EidQ'
@@ -42,9 +42,12 @@ var twitterApi = function(){
 			  , access_token_secret:  'P22wjAeEnLXRAxVKbG4JzCjuAka0PMU3ldO87yrmZOlv3'
 			});
 			
-			T.get('statuses/home_timeline', { count: 3 }, function(err, obj) {
-				console.log(arguments);
-  				if(err && err.message){
+			var data = {
+				count: config.count
+			};
+			
+			T.get('statuses/home_timeline', data, function(err, obj) {
+				if(err && err.message){
 					callback.call(scope, {
 						error: err
 					});
@@ -54,8 +57,26 @@ var twitterApi = function(){
 				callback.call(scope, obj);
 				return;
 			});
-
+	
+		},
+		
+		getFeedPromise: function(config){
 			
+			var deferred = Q.defer(),
+				data = {
+					accessToken:	config.accessToken,
+					count: 			config.limit || 10
+				};
+				
+			this.getUserFeed(data, function(items){
+				if( items.error){
+					deferred.reject(new Error(items.error));
+					return;
+				}
+				deferred.resolve(items);
+			}, this);
+			return deferred.promise;	
+					
 		}
 	
 	}; //  return 

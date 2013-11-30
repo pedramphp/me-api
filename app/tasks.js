@@ -56,7 +56,6 @@ tasks = function(){
 				facebookApi.getUserFeed(reqData, response, this);
 			
 			}else if(vendor == this.INSTAGRAM){
-				console.log(accessToken);
 				instagramApi.getUserFeed(accessToken, response, this);
 				
 			}else if(vendor == this.TWITTER){

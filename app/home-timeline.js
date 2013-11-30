@@ -1,83 +1,64 @@
 var facebookApi =  require("./facebookApi"),
 	instagramApi =  require("./instagramApi"),
 	twitterApi =  require("./twitterApi");
-	moment = require("moment");
+	moment = require("moment"),
+	Q = require('q');
 
 var timeline =  function(){
+	var feeds = [];
+		
+		
+	var fb = {
+		config: {
+			accessToken: "CAADuCyYQHbwBAHzhspZBlSznNcFnhDXMnmejoVvx82yeKHWirWORkq5VlddWVutORYZAO17ZBLIA9JbX7rt2lgSygCnkRH3RKzq1WZBJC8nSZCmCPJZA8hqTofwy5g20Q0YyaQqsENS8yBgqGpgbgfClhgZCSBi9vt8BBQrycTQcbrFfzmi5dXveolVWbHtTzthw8a4I3thIAZDZD",
+			limit: 3,
+			before: 0			
+		},
+		
+		setSize: function(size){
+			this.config.limit = size;
+		},
+		
+		getPromise: function(){
+			return facebookApi.getFeedPromise(this.config)
+									.then(this.feedCallback)
+									.fail(function(error){
+										console.log("FB Error", error);
+									});
+		},
+		
+		feedCallback: function(items){
+			items.data.forEach(function(item) {
+				var date = new Date(item.created_time);
+				feeds.push({
+					created_time: date.valueOf(),
+					type: "fb",
+				//	item: item,
+					created_time_string: moment(date.valueOf()).format('MMMM Do YYYY, h:mm:ss a')
+				});
+			});				
+		}
+	};
 	
-	return {
-		getTimeline: function(req, callback, scope){
-			var instagramAccessToken = "353722391.71c7cf4.b715204c2d004c84ae7330ad582abb1b";
-			var facebookAccessToken = "CAADuCyYQHbwBAPSLZC1tebwdgiUqBHMTVKXx2QEM7rLuFSrrCilNydkeDZAG8rZAK1NIFLZAFMkOtI4xFydd3S1XpmGJ5SE3PqMt7PKd4lSBSnk0kgZBXSgbi0gZCa7seZCku3kBdX2jCv3iZAOH1iyIM1fxGTHFZBF6uPEDtPYGDlZBxXJaZCN1VUeMPgoEjerDj4ZD";
-			var limit = 3;
-			var start = 0;
-			 
-			var feeds = [], 
-				fbStatus = false, 
-				instagramStatus = false;
+	var twitter = {
+			config: {
+				accessToken: "CAADuCyYQHbwBAHzhspZBlSznNcFnhDXMnmejoVvx82yeKHWirWORkq5VlddWVutORYZAO17ZBLIA9JbX7rt2lgSygCnkRH3RKzq1WZBJC8nSZCmCPJZA8hqTofwy5g20Q0YyaQqsENS8yBgqGpgbgfClhgZCSBi9vt8BBQrycTQcbrFfzmi5dXveolVWbHtTzthw8a4I3thIAZDZD",
+				limit: 3		
+			},
 			
-			var returnResponse = function(){
-				if(fbStatus && instagramStatus && twitterStatus){
-					feeds = feeds.sort(function(itemA, itemB){
-						console.log(itemB.created_time - itemB.created_time);
-						return itemB.created_time - itemA.created_time;
-					});
-					callback.call(scope, feeds);
-				}
-			};
+			setSize: function(size){
+				this.config.limit = size;
+			},
 			
-			facebookApi.getUserFeed({ start: start, limit: limit, accessToken: facebookAccessToken}, function(items){
-				console.log(arguments);
-				if( items.error){
-					fbStatus = true;
-					returnResponse();
-					return;
-				}
-				items.data.forEach(function(item) {
-					var date = new Date(item.created_time);
-					feeds.push({
-						created_time: date.valueOf(),
-						type: "fb",
-					//	item: item,
-						created_time_string: moment(date.valueOf()).format('MMMM Do YYYY, h:mm:ss a')
-					});
-				});
-				fbStatus = true;
-				returnResponse();
-			}, this);
+			getPromise: function(){
+				return twitterApi.getFeedPromise(this.config)
+									.then(this.feedCallback)
+									.fail(function( error ){ 
+										console.log(error); 
+									});
+			},
 			
-			
-			
-			instagramApi.getUserFeed(instagramAccessToken, function(items){
-			//	console.log(typeof items.data);
-				if( items.error){
-					instagramStatus = true;
-					returnResponse();
-					return;
-				}
-				items.data.forEach(function(item) {
-					feeds.push({
-						created_time: item.created_time * 1000,
-						type: "instagram",
-					//	item: item,
-						id: item.id,
-						created_time_string: moment(item.created_time * 1000).format('MMMM Do YYYY, h:mm:ss a')
-				
-					});
-				});
-				instagramStatus = true;
-				returnResponse();
-				
-			}, this);
-			
-			
-			twitterApi.getUserFeed(null, function(items){
-			//	console.log(typeof items.data);
-				if( items.error){
-					twitterStatus = true;
-					returnResponse();
-					return;
-				}
+			feedCallback: function(items){
 				items.forEach(function(item) {
 					var date = new Date(item.created_at);
 					feeds.push({
@@ -89,14 +70,68 @@ var timeline =  function(){
 				
 					});
 				});
-				twitterStatus = true;
-				returnResponse();
-				
-			}, this);
-		
-			
-		
+			}
+	};
+	
+	var instagram = {
+		config: {
+			accessToken: "353722391.71c7cf4.b715204c2d004c84ae7330ad582abb1b",
+			limit: 3			
 		},
+		
+		setSize: function(size){
+			this.config.limit = size;
+		},
+		
+		getPromise: function(){
+			return instagramApi.getFeedPromise(this.config)
+									.then(this.feedCallback)
+									.fail(function( error ){ 
+										console.log(error); 
+									});
+		},
+		
+		feedCallback: function(items){
+			items.data.forEach(function(item) {
+				feeds.push({
+					created_time: item.created_time * 1000,
+					type: "instagram",
+				//	item: item,
+					id: item.id,
+					created_time_string: moment(item.created_time * 1000).format('MMMM Do YYYY, h:mm:ss a')
+			
+				});
+			});			
+		}
+	};
+	
+	return {
+		getTimeline: function(req, callback, scope){
+			
+			var promises = [],
+				returnResponse = function(){
+					if(feeds.length){
+						feeds = feeds.sort(function(itemA, itemB){
+							return itemB.created_time - itemA.created_time;
+						});
+					}
+					callback.call(scope, feeds);
+				};
+			
+			promises.push( fb.getPromise() );
+			promises.push( twitter.getPromise() );
+			promises.push( instagram.getPromise() );
+			
+			
+			Q.all(promises).then(function(){
+				
+				returnResponse();
+		
+			}).fail(function(error){
+				console.log(error);
+				returnResponse();
+			})
+		}
 		
 	};
 	
