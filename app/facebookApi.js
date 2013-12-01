@@ -27,7 +27,7 @@ var facebookApi = function(){
 	
 	return {
 		
-		getUserFeed: function(req, callback, scope){
+		getUserFeed: function(config, callback, scope){
 			
 			var client,
 				data,
@@ -39,13 +39,16 @@ var facebookApi = function(){
 			});
 			
 			data = {
-				access_token: req.accessToken,
-				limit: req.limit || 10,
-				before: req.start || 0
+				access_token: config.accessToken,
+				limit: config.limit || 10
 			};
 			
-			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data);
+			if(config.until){
+				data.until = config.until || 0
+			}
 			
+			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data);
+			console.log(clientUrl);
 			client.get(clientUrl, function(err, req, res, obj){
 				
 				if(err && err.message){
@@ -65,7 +68,7 @@ var facebookApi = function(){
 				data = {
 					accessToken:	config.accessToken,
 					limit: 			config.limit || 10,
-					before:			config.start || 0
+					until:			config.until || 0
 				};
 			
 			deferred = Q.defer();

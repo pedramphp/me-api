@@ -1,7 +1,5 @@
 /* jshint node: true, quotmark:false */
 "use strict";
-
-
 var facebookApi =  require("./facebookApi"),
 	instagramApi =  require("./instagramApi"),
 	twitterApi =  require("./twitterApi"),

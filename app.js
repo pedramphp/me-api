@@ -69,7 +69,7 @@ app = function(){
 				console.log(new Error(data.error));
 				return next(new Error(data.error));
 			}
-			console.log("response:", data);
+			//console.log("response:", data);
 			res.json(data);
 			next();
 		}

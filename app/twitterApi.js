@@ -46,6 +46,10 @@ var twitterApi = function(){
 				count: config.count
 			};
 			
+			if(config.max_id){
+				data.max_id = config.max_id;
+			}
+
 			T.get('statuses/home_timeline', data, function(err, obj) {
 				if(err && err.message){
 					callback.call(scope, {
@@ -67,6 +71,10 @@ var twitterApi = function(){
 					accessToken:	config.accessToken,
 					count: 			config.limit || 10
 				};
+				
+			if(config.lastId){
+				data.max_id = config.lastId;
+			}
 				
 			this.getUserFeed(data, function(items){
 				if( items.error){
