@@ -74,7 +74,7 @@ var facebookApi = function(){
 			deferred = Q.defer();
 			this.getUserFeed(data, function(items){
 				if( items.error){
-					deferred.reject(new Error(items.error));
+					deferred.reject(new Error(JSON.stringify(JSON.parse(items.error.message).error)));
 					return;
 				}
 				deferred.resolve(items);

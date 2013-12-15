@@ -13,8 +13,9 @@ var timeline =  function(){
 		lastIndex: 0,
 		count: 0,
 		lastTimestamp: null,
+		isAvailable: true,
 		config: {
-			accessToken: "CAADuCyYQHbwBAJyU66oaEIwMwMdcF7c0SPKRopTq60hqVSDZB4X8wqS5C06KdzejEx2tPOSAjDDvvETz5U5RKw8dp25hYIkvCppku1JBKgTwPqqfqSZBWLEMUeDbZAHQ31jxq28cYc7IR3DrPBrlc3ZCzc5aOPHGaAAyzzZA9WVAdG4Q9nl7ZBUQPhbU4vlfgZCc5ckxm36kAZDZD",
+			accessToken: "CAADuCyYQHbwBABMgTRWsJMqEwmql9tBbofeoam1fNlrOWkH9EHJrlHxpv4bd0ByjVZARSj6ZBqsGlZCqTEQyWthxZCAEdjI4LneO2FqrAqosXZAdlaRLB8DOTBZCJNvUWsezDbvzXU0x2ZCYrBaMZA56sQj5axiBI7dGOhe4BNQelyRX579UyJE0MS76a8WnePwZD",
 			limit: 3,
 			before: 0			
 		},
@@ -28,13 +29,17 @@ var timeline =  function(){
 			return facebookApi.getFeedPromise(this.config)
 									.then(this.feedCallback.bind(this))
 									.fail(function(error){
+										error = JSON.parse(error.message);
+										if(error.type === "OAuthException"){
+											fb.isAvailable = false;
+										}
 										console.log("FB Error", error);
 									});
 		},
 		
 		feedCallback: function(items){
 			this.lastTimestamp = null;
-			console.log(" WPW ", items.data.length);
+			console.log(" feedCallback ", items.data.length);
 			items.data.forEach(function(item) {
 				var date = new Date(item.created_time);
 				feeds.push({
@@ -53,9 +58,10 @@ var timeline =  function(){
 			count: 0,
 			lastIndex: 0,
 			lastId: null,
+			isAvailable: true,
 			config: {
 				accessToken: "CAADuCyYQHbwBAHzhspZBlSznNcFnhDXMnmejoVvx82yeKHWirWORkq5VlddWVutORYZAO17ZBLIA9JbX7rt2lgSygCnkRH3RKzq1WZBJC8nSZCmCPJZA8hqTofwy5g20Q0YyaQqsENS8yBgqGpgbgfClhgZCSBi9vt8BBQrycTQcbrFfzmi5dXveolVWbHtTzthw8a4I3thIAZDZD",
-				limit: 3		
+				limit: 20		
 			},
 			
 			setSize: function(size){
@@ -70,6 +76,7 @@ var timeline =  function(){
 									.then(this.feedCallback.bind(this))
 									.fail(function( error ){ 
 										console.log("TWITTER Error", error);
+										twitter.isAvailable = false;
 									});
 			},
 			
@@ -96,6 +103,7 @@ var timeline =  function(){
 		count: 0,
 		lastIndex: 0,
 		lastId: null,
+		isAvailable: true,
 		config: {
 			accessToken: "353722391.71c7cf4.b715204c2d004c84ae7330ad582abb1b",
 			limit: 3			
@@ -113,6 +121,7 @@ var timeline =  function(){
 									.then(this.feedCallback.bind(this))
 									.fail(function( error ){ 
 										console.log("INSTAGRAM Error", error);
+										instagram.isAvailable = false;
 									});
 		},
 		
@@ -135,55 +144,126 @@ var timeline =  function(){
 	
 	var setIndexes = function(socialType){
 		var i = 0;
-		feeds.forEach(function(item) {
+		
+		if( socialType == "fb"){
+		
+			fb.lastIndex = null;
+			fb.lastTimestamp = null;
+		
+		}else if( socialType == "twitter"){
+		
+			twitter.lastIndex = null;
+			twitter.lastId = null;
+			
+		}else if(socialType == "instagram"){
+			
+			instagram.lastIndex = null;
+			instagram.lastId	= null;
+		
+		}
+		
+		feeds.forEach(function(item, i) {
 			if(item.type == socialType){
+				
 				if( socialType == "fb"){
 					fb.lastIndex = i;
 					fb.lastTimestamp = item.created_time / 1000;
+					
 				}else if( socialType == "twitter"){
+					
 					twitter.lastIndex = i;
 					twitter.lastId = item.id;
+					
 				}else if( socialType == "instagram"){
+					
 					instagram.lastIndex = i;
 					instagram.lastId = item.id;
+					
 				}
 			}
-			i++;
 		});
+		
+	};
+	
+	var getAvailableSocialIndex = function(){
+		var socialIndexes = [];
+		fb.isAvailable = false;
+		if(fb.isAvailable){
+			socialIndexes.push(fb.lastIndex);
+		}
+		
+		if(instagram.isAvailable){
+			socialIndexes.push(instagram.lastIndex);
+		}
+		
+		if(twitter.isAvailable){
+			socialIndexes.push(twitter.lastIndex);
+		}
+		
+		return socialIndexes;	
 	};
 	
 	var processFeed = function(callback){
 		var activeIndex = 0,
-			activeSocial;
+			activeSocialTitle,
+			activeSocial,
+			availableSocialIndexes;
 		
 		sortFeed();
 		setIndexes("fb");
 		setIndexes("twitter");
 		setIndexes("instagram");
-		if(Math.min(fb.lastIndex, instagram.lastIndex, twitter.lastIndex) >= 10){
+
+		availableSocialIndexes = getAvailableSocialIndex();
+		
+		if(Math.min.apply({}, availableSocialIndexes) >= 10){
 			callback();
 			return;
 		}
 		
-		activeIndex = fb.lastIndex;
-		activeSocial = fb.TITLE;
 		
-		if(twitter.lastIndex < activeIndex){
+		// if the API breaks.
+		if(fb.isAvailable){
+		
+			activeSocial = fb;
+		
+		}else if(twitter.isAvailable){
+			
+			activeSocial = twitter;
+			
+		}else if(instagram.isAvailable){
+			
+			activeSocial = instagram;
+			
+		}
+		
+		activeIndex = activeSocial.lastIndex;
+		activeSocialTitle = activeSocial.TITLE;
+			
+		if(fb.isAvailable && fb.lastIndex < activeIndex){
 			
 			activeIndex = twitter.lastIndex;
-			activeSocial = twitter.TITLE;
+			activeSocialTitle = twitter.TITLE;
 			
 		}
 		
-		if(instagram.lastIndex < activeIndex){
+		
+		if(twitter.isAvailable && twitter.lastIndex < activeIndex){
+			
+			activeIndex = twitter.lastIndex;
+			activeSocialTitle = twitter.TITLE;
+			
+		}
+		
+		if(instagram.isAvailable && instagram.lastIndex < activeIndex){
 			
 			activeIndex = instagram.lastIndex;
-			activeSocial = instagram.TITLE;
+			activeSocialTitle = instagram.TITLE;
 			
 		}
 		
 		
-		switch(activeSocial){
+		switch(activeSocialTitle){
 			case "FB":
 				Q(fb.getPromise()).then(function(){
 					processFeed( callback );
@@ -219,10 +299,10 @@ var timeline =  function(){
 			
 			var promises = [],
 				returnResponse = function(){
-					feeds = feeds.slice(0, 10);
-							setIndexes("fb");
-		setIndexes("twitter");
-		setIndexes("instagram");
+					//feeds = feeds.slice(0, 10);
+					setIndexes("fb");
+					setIndexes("twitter");
+					setIndexes("instagram");
 					callback.call(scope, {
 						lastIndex: {
 							fb: 		fb.lastIndex, 

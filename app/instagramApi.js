@@ -69,10 +69,10 @@ var instagramApi = function(){
 			
 			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data);
 			console.log(clientUrl);
-			
 			client.get(clientUrl, function(err, req, res, obj){
 				
 				if(err && err.message){
+					console.log(err);
 					callback.call(scope, {
 						error: err
 					});
