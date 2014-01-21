@@ -15,7 +15,7 @@ var timeline =  function(){
 		lastTimestamp: null,
 		isAvailable: true,
 		config: {
-			accessToken: "CAADuCyYQHbwBABMgTRWsJMqEwmql9tBbofeoam1fNlrOWkH9EHJrlHxpv4bd0ByjVZARSj6ZBqsGlZCqTEQyWthxZCAEdjI4LneO2FqrAqosXZAdlaRLB8DOTBZCJNvUWsezDbvzXU0x2ZCYrBaMZA56sQj5axiBI7dGOhe4BNQelyRX579UyJE0MS76a8WnePwZD",
+			accessToken: "CAADuCyYQHbwBAPqCPmG8JTesnQwgCfKcH7BZB2PXhxuPq7EXCbLJmv0aOU3letVSXgnFx2xoPKMQ4B2dZClepPZB0BJ97Y96r9YKg7ZAdc3a797z19NZCLjfnBKfFTuyBFT0ybkZCcRgKTqc9nTyoZBDQqSccwXvMTwwZBPEfUrarKS4wrKWtGg7Q6u5gA5QSNq3Xw7QhM6yigZDZD",
 			limit: 3,
 			before: 0			
 		},
@@ -45,7 +45,7 @@ var timeline =  function(){
 				feeds.push({
 					created_time: date.valueOf(),
 					type: "fb",
-					//item: item,
+					item: item,
 					created_time_string: moment(date.valueOf()).format('MMMM Do YYYY, h:mm:ss a')
 				});
 			});	
@@ -87,7 +87,7 @@ var timeline =  function(){
 					feeds.push({
 						created_time: date.valueOf(),
 						type: "twitter",
-						//item: item,
+						item: item,
 						id: item.id,
 						created_time_string: moment(item.created_at).format('MMMM Do YYYY, h:mm:ss a')
 				
@@ -131,7 +131,7 @@ var timeline =  function(){
 				feeds.push({
 					created_time: item.created_time * 1000,
 					type: "instagram",
-					//item: item,
+					item: item,
 					id: item.id,
 					created_time_string: moment(item.created_time * 1000).format('MMMM Do YYYY, h:mm:ss a')
 				});
@@ -296,7 +296,7 @@ var timeline =  function(){
 	
 	return {
 		getTimeline: function(req, callback, scope){
-			
+			feeds = [];
 			var promises = [],
 				returnResponse = function(){
 					//feeds = feeds.slice(0, 10);
@@ -338,7 +338,12 @@ var timeline =  function(){
 		
 	};
 	
-}();
+};
 
 
-module.exports = timeline;
+module.exports = {
+	getTimeline: function(req, callback, scope){
+		var t = timeline();
+		t.getTimeline(req, callback, scope);
+	}
+};

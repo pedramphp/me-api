@@ -47,7 +47,7 @@ var facebookApi = function(){
 				data.until = config.until || 0
 			}
 			
-			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data);
+			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data) + "&"+"fields=comments.summary(1),likes.summary(1),id,name,picture,application,caption,created_time,description,from,is_hidden,link,message,message_tags,object_id,picture,place,privacy,properties,shares,source,status_type,story,story_tags,to,updated_time,with_tags";
 			console.log(clientUrl);
 			client.get(clientUrl, function(err, req, res, obj){
 				
