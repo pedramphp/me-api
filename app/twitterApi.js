@@ -49,7 +49,7 @@ var twitterApi = function(){
 			if(config.max_id){
 				data.max_id = config.max_id;
 			}
-
+			console.log("twitter call: ",data);
 			T.get('statuses/home_timeline', data, function(err, obj) {
 				if(err && err.message){
 					callback.call(scope, {

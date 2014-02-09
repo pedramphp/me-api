@@ -62,13 +62,13 @@ var instagramApi = function(){
 				count: config.count || 10
 			};
 			
-			if(config.min_id){
-				data.min_id = config.min_id
+			if(config.max_id){
+				data.max_id = config.max_id
 			}
 			
 			
 			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data);
-			console.log(clientUrl);
+			console.log("IG call:" + clientUrl);
 			client.get(clientUrl, function(err, req, res, obj){
 				
 				if(err && err.message){
@@ -92,12 +92,13 @@ var instagramApi = function(){
 				};
 				
 			if(config.lastId){
-				data.min_id = config.lastId
+				data.max_id = config.lastId
 			}	
 			
 			deferred = Q.defer();
 			this.getUserFeed(data, function(items){
 				if( items.error){
+				
 					deferred.reject(new Error(items.error));
 					return;
 				}

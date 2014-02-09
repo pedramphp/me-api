@@ -7,6 +7,7 @@ var facebookApi =  require("./facebookApi"),
 var timeline =  function(){
 	var feeds = [];
 		
+	var PAGE_SIZE = 80;
 		
 	var fb = {
 		TITLE: "FB",
@@ -15,9 +16,8 @@ var timeline =  function(){
 		lastTimestamp: null,
 		isAvailable: true,
 		config: {
-			accessToken: "CAADuCyYQHbwBAPqCPmG8JTesnQwgCfKcH7BZB2PXhxuPq7EXCbLJmv0aOU3letVSXgnFx2xoPKMQ4B2dZClepPZB0BJ97Y96r9YKg7ZAdc3a797z19NZCLjfnBKfFTuyBFT0ybkZCcRgKTqc9nTyoZBDQqSccwXvMTwwZBPEfUrarKS4wrKWtGg7Q6u5gA5QSNq3Xw7QhM6yigZDZD",
-			limit: 3,
-			before: 0			
+			accessToken: "CAADuCyYQHbwBAPZAG4LiAK3LCldGh7pnCUYj7gV3tADnRu6G1QZBucUuobNb6PXnL3hnvcoieSK6QBt2SVDcUmmt8i7XGDQdpNcbDsV9GIAlXpkV9cMbFwLqb2L1QL8AHUovfZA7wcrma0g5BbfSvmjYCCyNgOKvFVQafuhxxZBiYAvbsO0lnZA3Pbl6VCThM21adxIg7KwZDZD",
+			before: 0
 		},
 		
 		setSize: function(size){
@@ -29,17 +29,19 @@ var timeline =  function(){
 			return facebookApi.getFeedPromise(this.config)
 									.then(this.feedCallback.bind(this))
 									.fail(function(error){
-										error = JSON.parse(error.message);
-										if(error.type === "OAuthException"){
-											fb.isAvailable = false;
+										if(error.message){
+											error = JSON.parse(error.message);
+											if(error.type === "OAuthException"){
+												fb.isAvailable = false;
+											}
 										}
+										fb.isAvailable = false;
 										console.log("FB Error", error);
 									});
 		},
 		
 		feedCallback: function(items){
 			this.lastTimestamp = null;
-			console.log(" feedCallback ", items.data.length);
 			items.data.forEach(function(item) {
 				var date = new Date(item.created_time);
 				feeds.push({
@@ -49,7 +51,8 @@ var timeline =  function(){
 					created_time_string: moment(date.valueOf()).format('MMMM Do YYYY, h:mm:ss a')
 				});
 			});	
-			this.count = items.data.length || 0;			
+			this.count = (items.data && items.data.length) || 0;
+		
 		}
 	};
 	
@@ -126,8 +129,10 @@ var timeline =  function(){
 		},
 		
 		feedCallback: function(items){
+			
 			this.lastId = null;
 			items.data.forEach(function(item) {
+				
 				feeds.push({
 					created_time: item.created_time * 1000,
 					type: "instagram",
@@ -138,7 +143,7 @@ var timeline =  function(){
 			});			
 			
 			
-			this.count = items.data.length || 0;
+			this.count = (items.data && items.data.length) || 0;
 		}
 	};
 	
@@ -162,6 +167,7 @@ var timeline =  function(){
 		
 		}
 		
+		
 		feeds.forEach(function(item, i) {
 			if(item.type == socialType){
 				
@@ -175,7 +181,6 @@ var timeline =  function(){
 					twitter.lastId = item.id;
 					
 				}else if( socialType == "instagram"){
-					
 					instagram.lastIndex = i;
 					instagram.lastId = item.id;
 					
@@ -183,11 +188,12 @@ var timeline =  function(){
 			}
 		});
 		
+		
+		
 	};
 	
 	var getAvailableSocialIndex = function(){
 		var socialIndexes = [];
-		fb.isAvailable = false;
 		if(fb.isAvailable){
 			socialIndexes.push(fb.lastIndex);
 		}
@@ -216,11 +222,13 @@ var timeline =  function(){
 
 		availableSocialIndexes = getAvailableSocialIndex();
 		
-		if(Math.min.apply({}, availableSocialIndexes) >= 10){
+		if(Math.min.apply({}, availableSocialIndexes) >= PAGE_SIZE){
 			callback();
 			return;
 		}
 		
+		//fb.isAvailable = false;
+		twitter.isAvailable = false;
 		
 		// if the API breaks.
 		if(fb.isAvailable){
@@ -234,16 +242,18 @@ var timeline =  function(){
 		}else if(instagram.isAvailable){
 			
 			activeSocial = instagram;
-			
 		}
+		
+		
 		
 		activeIndex = activeSocial.lastIndex;
 		activeSocialTitle = activeSocial.TITLE;
+	
 			
 		if(fb.isAvailable && fb.lastIndex < activeIndex){
 			
-			activeIndex = twitter.lastIndex;
-			activeSocialTitle = twitter.TITLE;
+			activeIndex = fb.lastIndex;
+			activeSocialTitle = fb.TITLE;
 			
 		}
 		
@@ -256,12 +266,11 @@ var timeline =  function(){
 		}
 		
 		if(instagram.isAvailable && instagram.lastIndex < activeIndex){
-			
+		
 			activeIndex = instagram.lastIndex;
 			activeSocialTitle = instagram.TITLE;
 			
 		}
-		
 		
 		switch(activeSocialTitle){
 			case "FB":
@@ -273,16 +282,16 @@ var timeline =  function(){
 				Q(instagram.getPromise()).then(function(){
 					processFeed( callback );
 				});
+				
 				break;
 			case "TWITTER":
+				
 				Q(twitter.getPromise()).then(function(){
 					processFeed( callback );
 				});
+				
 				break;		
 		}
-		
-		//ready to print response
-		//
 	};
 	
 	var sortFeed = function(){
@@ -299,7 +308,7 @@ var timeline =  function(){
 			feeds = [];
 			var promises = [],
 				returnResponse = function(){
-					//feeds = feeds.slice(0, 10);
+					feeds = feeds.slice(0, PAGE_SIZE);
 					setIndexes("fb");
 					setIndexes("twitter");
 					setIndexes("instagram");
@@ -325,7 +334,6 @@ var timeline =  function(){
 			
 			
 			Q.all(promises).then(function(){
-				
 				processFeed(returnResponse);
 		
 			}).fail(function(error){

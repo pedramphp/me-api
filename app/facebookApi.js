@@ -48,17 +48,28 @@ var facebookApi = function(){
 			}
 			
 			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data) + "&"+"fields=comments.summary(1),likes.summary(1),id,name,picture,application,caption,created_time,description,from,is_hidden,link,message,message_tags,object_id,picture,place,privacy,properties,shares,source,status_type,story,story_tags,to,updated_time,with_tags";
-			console.log(clientUrl);
+			console.log("FB Call:" + clientUrl);
 			client.get(clientUrl, function(err, req, res, obj){
-				
-				if(err && err.message){
+	
+				if( err && err.message){
 					callback.call(scope, {
-						error: err
+						error: err || "object is empty"
 					});
 					return;
 				}
-		
-				callback.call(scope, JSON.parse(obj));
+				var obj = JSON.parse(obj);
+				if( !obj.data.length ){
+					
+					callback.call(scope, {
+						error: {
+							message: '{"error": "object is empty"}'
+						}
+					});
+					
+					return;					
+				}
+				
+				callback.call(scope, obj);
 				return;
 			});
 		},
@@ -74,6 +85,7 @@ var facebookApi = function(){
 			deferred = Q.defer();
 			this.getUserFeed(data, function(items){
 				if( items.error){
+					
 					deferred.reject(new Error(JSON.stringify(JSON.parse(items.error.message).error)));
 					return;
 				}
