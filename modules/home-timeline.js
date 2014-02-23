@@ -7,7 +7,7 @@ var facebookApi =  require("./facebookApi"),
 var timeline =  function(){
 	var feeds = [];
 		
-	var PAGE_SIZE = 80;
+	var PAGE_SIZE = 10;
 		
 	var fb = {
 		TITLE: "FB",

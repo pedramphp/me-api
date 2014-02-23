@@ -16,9 +16,14 @@ http://216.70.108.50:7000/facebook/user_feed/CAADuCyYQHbwBACOP3AseylGj8lWY3G47NX
 * 
 * * 
 * */
+"use strict";
 var querystring = require('querystring'),
 	restify = require('restify'),
 	Q = require('q');
+
+
+var socialCache =  require('./socialCache');
+socialCache().init();
 
 var facebookApi = function(){
 	
@@ -44,11 +49,13 @@ var facebookApi = function(){
 			};
 			
 			if(config.until){
-				data.until = config.until || 0
+				data.until = config.until || 0;
 			}
 			
 			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data) + "&"+"fields=comments.summary(1),likes.summary(1),id,name,picture,application,caption,created_time,description,from,is_hidden,link,message,message_tags,object_id,picture,place,privacy,properties,shares,source,status_type,story,story_tags,to,updated_time,with_tags";
+			
 			console.log("FB Call:" + clientUrl);
+
 			client.get(clientUrl, function(err, req, res, obj){
 	
 				if( err && err.message){
@@ -57,7 +64,7 @@ var facebookApi = function(){
 					});
 					return;
 				}
-				var obj = JSON.parse(obj);
+				obj = JSON.parse(obj);
 				if( !obj.data.length ){
 					
 					callback.call(scope, {
@@ -66,10 +73,11 @@ var facebookApi = function(){
 						}
 					});
 					
-					return;					
+					return;
 				}
-				
+
 				callback.call(scope, obj);
+				
 				return;
 			});
 		},
@@ -78,7 +86,7 @@ var facebookApi = function(){
 			var deferred,
 				data = {
 					accessToken:	config.accessToken,
-					limit: 			config.limit || 10,
+					limit:			config.limit || 10,
 					until:			config.until || 0
 				};
 			
@@ -91,11 +99,9 @@ var facebookApi = function(){
 				}
 				deferred.resolve(items);
 			}, this);
-			return deferred.promise;			
+			return deferred.promise;
 		}
-	
-	}; //  return 
-	
+	};
 }();
 
 
