@@ -7,7 +7,10 @@
     "restify": "~2.6.0",
     "twit": "~1.1.0",
     "moment": "~2.4.0",
-    "q": "~0.9.7"
+    "q": "~0.9.7",
+    "redis": "~0.10.1",
+    "connect-redis": "~1.4.7",
+    "winston": "~0.7.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
