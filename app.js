@@ -1,10 +1,10 @@
 /* jshint node: true, quotmark:false */
 "use strict";
 
-var
-server = require("./server/rest-server").getServer(),
-tasks = require("./app/tasks"),
-app = function(){
+var server = require("./server/rest-server").getServer(),
+	tasks = require("./modules/tasks");
+
+var app = function(){
 	return {
 		init: function(){
 			this.initPaths();
@@ -54,7 +54,6 @@ app = function(){
 						that.respond({ error: "app initPaths : Task is misspelled" }, res, next);
 						return;	
 					}
-					
 					tasks[item.task](req, item.vendor || null, function(data){
 						that.respond(data, res, next);
 					}, that);
@@ -75,4 +74,5 @@ app = function(){
 		}
 	};
 }();
+
 app.init();
