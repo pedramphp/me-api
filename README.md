@@ -2,10 +2,6 @@ Me Services
 ====================
 
 
-```node
-redis-server
-```
-
 How to run the server
 --
 ```node
@@ -37,6 +33,11 @@ You don't need to install redis now!
 install redis in your machine after installing run the "redis-server" command
 
 * [Redis Quickstart] - Redis databse
+
+
+```node
+redis-server
+```
 
 
 [Redis Quickstart]:http://redis.io/topics/quickstart
