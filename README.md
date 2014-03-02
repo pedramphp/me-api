@@ -38,9 +38,21 @@ and change SERVER_IP_ADDRESS and SERVER_PORT.
 
 
 Facebook Access Token:
+----------------------
 http://mergify.com/facebook/test.html
 
 open the the console and copy the access token
+
+
+Instagram Access Token:
+--------------------------
+http://mergify.com/me-services/test/index.html
+
+it will redirect to this url
+
+http://mergify.com/instagram/test?code=5920d42bf5094ab1866cd25cdb12b27c
+
+copy the code and that is your access_token
 
 ```
 
