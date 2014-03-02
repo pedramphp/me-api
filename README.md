@@ -7,6 +7,16 @@ How to run the server
 ```node
 npm install // to download all the dependencies
 node app.js
+
+
+For auto connection use nodemon
+
+Install Nodemon
+npm install -g nodemon
+
+
+starting the server
+nodemon app.js
 ```
 
 Service Urls
