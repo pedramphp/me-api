@@ -36,6 +36,7 @@ and change SERVER_IP_ADDRESS and SERVER_PORT.
 
 
 
+
 Facebook Access Token:
 http://mergify.com/facebook/test.html
 
@@ -57,5 +58,20 @@ install redis in your machine after installing run the "redis-server" command
 redis-server
 ```
 
+Node JS Logging Framework
+--
 
+* [Winston Logger] - Winston Logging framework docs.
+
+
+Markdown Helper
+--
+* [MD Markdown] - Markdown helper tool
+
+
+
+[Winston Logger]:https://github.com/flatiron/winston
 [Redis Quickstart]:http://redis.io/topics/quickstart
+[MD Markdown]:http://dillinger.io/
+
+
