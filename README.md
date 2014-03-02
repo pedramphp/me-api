@@ -19,7 +19,7 @@ starting the server
 nodemon app.js
 ```
 
-Service Urls
+Service Urls And Access Token generation
 --
 ```node
 
@@ -33,6 +33,14 @@ and change SERVER_IP_ADDRESS and SERVER_PORT.
 * Facebook Friends Activity Feed:  /facebook/user_feed/[ACCESS_TOKEN]
 * Twitter Friends Activity Feed:  /twitter/user_feed/[ACCESS_TOKEN]
 * Me Friends Activity Timeline:   /timeline/home
+
+
+
+Facebook Access Token:
+http://mergify.com/facebook/test.html
+
+open the the console and copy the access token
+
 ```
 
 
