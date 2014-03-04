@@ -6,10 +6,11 @@ var restify = require('restify');
 
 var restServer = function(){
 	
-	var SERVER_NAME		= "Me Instagram Service",
-		SERVER_IP_ADDRESS = "216.70.108.50", // needs to be send as a parameter
+	var SERVER_NAME		= "Me Services",
+		//SERVER_IP_ADDRESS = "216.70.108.50", // needs to be send as a parameter
+		SERVER_IP_ADDRESS = "127.0.0.1", // needs to be send as a parameter
 		DEFAULT_VERSION = "0.0.1",
-		SERVER_PORT = 7000, // needs to be send as a parameter
+		SERVER_PORT = 3000, // needs to be send as a parameter
 		server = null;
 
 	return({
