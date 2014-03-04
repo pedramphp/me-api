@@ -1,3 +1,4 @@
+"use strict";
 /*
 
 Your application's OAuth settings. Keep the "Consumer secret" a secret. This key should never be human-readable in your application.
@@ -36,10 +37,10 @@ var twitterApi = function(){
 		getUserFeed: function(config, callback, scope){
 						
 			var T = new Twit({
-			    consumer_key:         'cghIPQ5xAS8H3WlDkyiURw'
-			  , consumer_secret:      'KbVoamKQidrhk5tdo6HNHx8iKm8kANhkNMSOWr6EidQ'
-			  , access_token:         '16912759-3Ma5nGV1U3WD2zoN7c4Alj0jCgsDsMssaN3yXFBWT'
-			  , access_token_secret:  'P22wjAeEnLXRAxVKbG4JzCjuAka0PMU3ldO87yrmZOlv3'
+				consumer_key:			'cghIPQ5xAS8H3WlDkyiURw',
+				consumer_secret:		'KbVoamKQidrhk5tdo6HNHx8iKm8kANhkNMSOWr6EidQ',
+				access_token:			'16912759-3Ma5nGV1U3WD2zoN7c4Alj0jCgsDsMssaN3yXFBWT',
+				access_token_secret:	'P22wjAeEnLXRAxVKbG4JzCjuAka0PMU3ldO87yrmZOlv3'
 			});
 			
 			var data = {
@@ -69,7 +70,7 @@ var twitterApi = function(){
 			var deferred = Q.defer(),
 				data = {
 					accessToken:	config.accessToken,
-					count: 			config.limit || 10
+					count:			config.limit || 10
 				};
 				
 			if(config.lastId){
@@ -83,11 +84,10 @@ var twitterApi = function(){
 				}
 				deferred.resolve(items);
 			}, this);
-			return deferred.promise;	
-					
+			return deferred.promise;
 		}
-	
-	}; //  return 
+
+	};//  return 
 	
 }();
 

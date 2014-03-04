@@ -11,5 +11,6 @@
   "trailing": true,
   "undef": true,
   "unused": false,
-  "node": true
+  "node": true,
+  "newcap": false
 }

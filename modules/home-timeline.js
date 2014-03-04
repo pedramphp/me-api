@@ -1,6 +1,8 @@
+"use strict";
+
 var facebookApi =  require("./facebookApi"),
 	instagramApi =  require("./instagramApi"),
-	twitterApi =  require("./twitterApi");
+	twitterApi =  require("./twitterApi"),
 	moment = require("moment"),
 	Q = require('q');
 
@@ -25,7 +27,7 @@ var timeline =  function(){
 		},
 		
 		getPromise: function(){
-			this.config.until = this.lastTimestamp || 0; 
+			this.config.until = this.lastTimestamp || 0;
 			return facebookApi.getFeedPromise(this.config)
 									.then(this.feedCallback.bind(this))
 									.fail(function(error){
@@ -50,7 +52,7 @@ var timeline =  function(){
 					item: item,
 					created_time_string: moment(date.valueOf()).format('MMMM Do YYYY, h:mm:ss a')
 				});
-			});	
+			});
 			this.count = (items.data && items.data.length) || 0;
 		
 		}
@@ -62,11 +64,11 @@ var timeline =  function(){
 			lastIndex: 0,
 			lastId: null,
 			isAvailable: true,
-			config: {
+			config:{
 				accessToken: "CAADuCyYQHbwBAHzhspZBlSznNcFnhDXMnmejoVvx82yeKHWirWORkq5VlddWVutORYZAO17ZBLIA9JbX7rt2lgSygCnkRH3RKzq1WZBJC8nSZCmCPJZA8hqTofwy5g20Q0YyaQqsENS8yBgqGpgbgfClhgZCSBi9vt8BBQrycTQcbrFfzmi5dXveolVWbHtTzthw8a4I3thIAZDZD",
-				limit: 20		
+				limit: 20
 			},
-			
+
 			setSize: function(size){
 				this.config.limit = size;
 			},
@@ -77,7 +79,7 @@ var timeline =  function(){
 				}
 				return twitterApi.getFeedPromise(this.config)
 									.then(this.feedCallback.bind(this))
-									.fail(function( error ){ 
+									.fail(function( error ){
 										console.log("TWITTER Error", error);
 										twitter.isAvailable = false;
 									});
@@ -102,14 +104,14 @@ var timeline =  function(){
 	};
 	
 	var instagram = {
-		TITLE: "INSTAGRAM",		
+		TITLE: "INSTAGRAM",
 		count: 0,
 		lastIndex: 0,
 		lastId: null,
 		isAvailable: true,
 		config: {
 			accessToken: "353722391.71c7cf4.b715204c2d004c84ae7330ad582abb1b",
-			limit: 3			
+			limit: 3
 		},
 		
 		setSize: function(size){
@@ -122,7 +124,7 @@ var timeline =  function(){
 			}
 			return instagramApi.getFeedPromise(this.config)
 									.then(this.feedCallback.bind(this))
-									.fail(function( error ){ 
+									.fail(function( error ){
 										console.log("INSTAGRAM Error", error);
 										instagram.isAvailable = false;
 									});
@@ -140,8 +142,7 @@ var timeline =  function(){
 					id: item.id,
 					created_time_string: moment(item.created_time * 1000).format('MMMM Do YYYY, h:mm:ss a')
 				});
-			});			
-			
+			});
 			
 			this.count = (items.data && items.data.length) || 0;
 		}
@@ -206,9 +207,9 @@ var timeline =  function(){
 			socialIndexes.push(twitter.lastIndex);
 		}
 		
-		return socialIndexes;	
+		return socialIndexes;
 	};
-	
+
 	var processFeed = function(callback){
 		var activeIndex = 0,
 			activeSocialTitle,
@@ -290,7 +291,7 @@ var timeline =  function(){
 					processFeed( callback );
 				});
 				
-				break;		
+				break;
 		}
 	};
 	
@@ -299,7 +300,7 @@ var timeline =  function(){
 			feeds = feeds.sort(function(itemA, itemB){
 				return itemB.created_time - itemA.created_time;
 			});
-		}		
+		}
 	};
 	
 	
@@ -314,13 +315,13 @@ var timeline =  function(){
 					setIndexes("instagram");
 					callback.call(scope, {
 						lastIndex: {
-							fb: 		fb.lastIndex, 
-							instagram:	instagram.lastIndex, 
+							fb:			fb.lastIndex,
+							instagram:	instagram.lastIndex,
 							twitter:	twitter.lastIndex
 						},
 						lastId: {
-							fb:			fb.lastTimestamp, 
-							instagram:	instagram.lastId, 
+							fb:			fb.lastTimestamp,
+							instagram:	instagram.lastId,
 							twitter:	twitter.lastId
 						},
 						feedCount: feeds.length,

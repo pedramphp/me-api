@@ -44,26 +44,41 @@ var app = function(){
 			}];
 
 			// loop throgh all paths and initiate server request
-			paths.forEach(function(item){
-
-				server[item.reqType]({
-					path:		item.path,
-					versions:	item.versions
-				}, function(req, res, next){
-					if(!tasks[item.task]){
-						that.respond({ error: "app initPaths : Task is misspelled" }, res, next);
-						return;	
-					}
-					tasks[item.task](req, item.vendor || null, function(data){
-						that.respond(data, res, next);
-					}, that);
-
-				});
-			
-			});
+			paths.forEach(this.registerRoute.bind(this));
 		},
 
-		respond: function(data, res, next){
+		registerRoute: function(item){
+			
+			var that = this,
+				config = {
+					path:		item.path,
+					versions:	item.versions
+				},
+				vendor =  item.vendor || null,
+				routeCallback;
+
+			routeCallback = function(req, res, next){
+
+				var taskCallback;
+				if(!tasks[item.task]){
+					that.output({ error: "app initPaths : Task is misspelled" }, res, next);
+					return;
+				}
+
+				taskCallback = function(data){
+					that.output(data, res, next);
+				};
+				
+				// load tasks.
+				tasks[item.task](req, vendor, taskCallback, that);
+
+			};
+
+			// register route
+			server[item.reqType](config, routeCallback);
+		},
+
+		output: function(data, res, next){
 			if(data.error){
 				console.log(new Error(data.error));
 				return next(new Error(data.error));

@@ -1,3 +1,4 @@
+"use strict";
 /*
 {"access_token":"353722391.71c7cf4.b715204c2d004c84ae7330ad582abb1b",
 "user":{"username":"mahdipedram","bio":"","website":"","profile_picture":"http://images.ak.instagram.com/profiles/profile_353722391_75sq_1366096725.jpg","full_name":"Mahdi PedramRazi","id":"353722391"}}
@@ -10,12 +11,12 @@ var querystring = require('querystring'),
 var instagramApi = function(){
 	
 	var CLIENT_ID		= "71c7cf49cc78468b9de3f1a6b0985c81",
-	CLIENT_SECRET		= "4c442a0662ee467197c61dafdd259cd9",
-	GRANT_TYPE			= "authorization_code",
-	REDIRECT_URL		= "http://mergify.com/instagram/test",
-	API_BASE_URL		= "https://api.instagram.com",
-	SELF_FEED_PATH		= "/v1/users/self/feed/",
-	AUTH_ACESS_TOKEN_PATH = "/oauth/access_token";	
+		CLIENT_SECRET		= "4c442a0662ee467197c61dafdd259cd9",
+		GRANT_TYPE			= "authorization_code",
+		REDIRECT_URL		= "http://mergify.com/instagram/test",
+		API_BASE_URL		= "https://api.instagram.com",
+		SELF_FEED_PATH		= "/v1/users/self/feed/",
+		AUTH_ACESS_TOKEN_PATH = "/oauth/access_token";
 	
 	return {
 		auth: function(authToken, callback, scope){
@@ -43,7 +44,7 @@ var instagramApi = function(){
 					return;
 				}
 				callback.call(scope, JSON.parse(obj));
-			});	
+			});
 		},
 		
 		getUserFeed: function(config, callback, scope){
@@ -63,10 +64,9 @@ var instagramApi = function(){
 			};
 			
 			if(config.max_id){
-				data.max_id = config.max_id
+				data.max_id = config.max_id;
 			}
-			
-			
+
 			clientUrl = SELF_FEED_PATH + "?" + querystring.stringify(data);
 			console.log("IG call:" + clientUrl);
 			client.get(clientUrl, function(err, req, res, obj){
@@ -88,12 +88,12 @@ var instagramApi = function(){
 			var deferred,
 				data = {
 					accessToken:	config.accessToken,
-					count: 			config.limit || 10
+					count:			config.limit || 10
 				};
 				
 			if(config.lastId){
-				data.max_id = config.lastId
-			}	
+				data.max_id = config.lastId;
+			}
 			
 			deferred = Q.defer();
 			this.getUserFeed(data, function(items){
@@ -104,10 +104,10 @@ var instagramApi = function(){
 				}
 				deferred.resolve(items);
 			}, this);
-			return deferred.promise;			
+			return deferred.promise;
 		}
 	
-	}; //  return 
+	};//  return 
 	
 }();
 
