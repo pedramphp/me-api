@@ -86,10 +86,34 @@ Markdown Helper
 * [MD Markdown] - Markdown helper tool
 
 
+Debugging
+--
+Use Node Inspector for debugging
+
+```node
+
+sudo npm install -g node-inspector
+
+//run the following command to enable the debugger
+
+node-inspector
+
+// start the app with --debug flags
+
+node --debug app.js
+
+//to start the app with a break point
+
+node --debug-brk app.js
+
+```
+[Node Inspect Video] Watch the video
+
 
 [Winston Logger]:https://github.com/flatiron/winston
 [Redis Quickstart]:http://redis.io/topics/quickstart
 [MD Markdown]:http://dillinger.io/
+[Node Inspect Video]:https://www.youtube.com/watch?v=03qGA-GJXjI
 
 
 
