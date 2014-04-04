@@ -4,7 +4,21 @@
   // Documentation: http://www.jshint.com/docs/
   "browser": true,
   "esnext": true,
-  "globals": {},
+  "globals": {
+    "jasmine": false,
+    "spyOn": false,
+    "it": false,
+    "console": false,
+    "describe": false,
+    "expect": false,
+    "beforeEach": false,
+    "waits": false,
+    "waitsFor": false,
+    "runs": false,
+    "require": false,
+    "define": false
+
+  },
   "globalstrict": true,
   "quotmark": false, // double quote and single quote
   "smarttabs": true,

@@ -1,5 +1,5 @@
-/* jshint node: true, quotmark:false */
 "use strict";
+
 var facebookApi =  require("./facebookApi"),
 	instagramApi =  require("./instagramApi"),
 	twitterApi =  require("./twitterApi"),
@@ -16,22 +16,31 @@ tasks = function(){
 			
 			//authToken needs validation
 			var authToken = req.params.authToken,
-				response;
+				accessToken = req.params.accessToken,
+				response,
+				auth = require("../app/modules/core/auth");
+
+				console.log("AUTH", req.params);
 				
 			response = function(responseObj){
 				
 				// before calling the callback function it needs to save the auth token in the database.
 				resCallback.call(scope, responseObj);
-			}
+			};
 			
-			if(vendor == this.FACEBOOK){
+			if(vendor === this.FACEBOOK){
 			
-				facebookApi.auth(authToken, response, this);
+				//facebookApi.auth(authToken, response, this);
+
+				//authenticate facebook
+				auth.facebook(authToken, accessToken)
+					.then(function(value){
+						response( value );
+					});
 			
-			}else if(vendor == this.INSTAGRAM){
-					
+			}else if(vendor === this.INSTAGRAM){
+
 				instagramApi.auth(authToken, response, this);
-				
 			}
 		},
 		
@@ -43,9 +52,9 @@ tasks = function(){
 				
 			response = function(responseObj){
 				resCallback.call(scope, responseObj);
-			}
+			};
 			
-			if(vendor == this.FACEBOOK){
+			if(vendor === this.FACEBOOK){
 				reqData = {
 					accessToken: accessToken,
 					start: 0,
@@ -53,12 +62,12 @@ tasks = function(){
 				};
 				facebookApi.getUserFeed(reqData, response, this);
 			
-			}else if(vendor == this.INSTAGRAM){
+			}else if(vendor === this.INSTAGRAM){
 				instagramApi.getUserFeed(accessToken, response, this);
 				
-			}else if(vendor == this.TWITTER){
-				twitterApi.getUserFeed(accessToken, response, this);	
-			}			
+			}else if(vendor === this.TWITTER){
+				twitterApi.getUserFeed(accessToken, response, this);
+			}
 		},
 		
 		getHomeTimeline: function(req, vendor, resCallback, scope){
@@ -68,15 +77,14 @@ tasks = function(){
 				
 			response = function(responseObj){
 				resCallback.call(scope, responseObj);
-			}
-			
+			};
 			
 			reqData = {
 				start: 0,
 				size: 10
 			};
 			
-			homeTimeline.getTimeline(reqData, response, this);			
+			homeTimeline.getTimeline(reqData, response, this);
 		}
 	};
 }();

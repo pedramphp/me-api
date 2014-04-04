@@ -19,6 +19,12 @@ var app = function(){
 				vendor:		tasks.INSTAGRAM,
 				reqType:	'get'
 			},{
+				path:		'/facebook/auth/:authToken',
+				versions:	'0.0.1',
+				task:		'auth',
+				vendor:		tasks.FACEBOOK,
+				reqType:	'get'
+			},{
 				path:		'/instagram/user_feed/:accessToken',
 				versions:	'0.0.1',
 				task:		'getUserFeed',

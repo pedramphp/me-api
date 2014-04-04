@@ -26,6 +26,10 @@ var restServer = function(){
 					version:	DEFAULT_VERSION
 				});
 				
+				server.use(restify.queryParser());
+
+				server.pre(restify.pre.sanitizePath());
+				
 				server.listen(SERVER_PORT ,SERVER_IP_ADDRESS, function() {
 					console.log('%s v%s listening at %s', server.name, server.versions, server.url);
 				});
